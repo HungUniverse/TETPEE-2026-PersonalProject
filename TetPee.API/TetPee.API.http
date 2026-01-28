@@ -1,6 +1,6 @@
-@TetPee.Api_HostAddress = http://localhost:5065
+@TetPee.API_HostAddress = http://localhost:5225
 
-GET {{TetPee.Api_HostAddress}}/weatherforecast/
+GET {{TetPee.API_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###

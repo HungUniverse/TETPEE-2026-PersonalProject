@@ -1,4 +1,4 @@
-namespace TetPee.Api;
+namespace TetPee.API;
 
 public class WeatherForecast
 {
