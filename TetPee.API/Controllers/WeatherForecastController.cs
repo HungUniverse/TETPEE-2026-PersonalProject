@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace TetPee.API.Controllers;
+namespace TetPee.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
