@@ -12,7 +12,7 @@ using TetPee.Repository;
 namespace TetPee.Repository.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260128125538_Initial")]
+    [Migration("20260204115849_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
