@@ -10,11 +10,14 @@ namespace TetPee.API.Controllers;
 public class UserController: ControllerBase
 {
     private readonly AppDbContext _dbContext;
+    
     //Cái này nâng cao
+    private readonly IService _service;
 
-    public UserController(AppDbContext dbContext)
+    public UserController(AppDbContext dbContext, IService service)
     {
         _dbContext = dbContext;
+        _service = service;
     }
 
     //HTTP Method: GET, POST, PUT, DELETE, PATCH
@@ -43,17 +46,18 @@ public class UserController: ControllerBase
     // delete user by id: DELETE  //http://localhost:5000/User/{id}
     
     [HttpGet("")]
-    public IActionResult GetUsers([FromQuery] string? searchTerm)
+    public async Task<IActionResult> GetUsers( string? searchTerm, int pageSize = 10, int pageIndex = 1)
     {
-        var users = _dbContext.Users.ToList();
+        var users = await _service.GetUsers(searchTerm, pageSize, pageIndex);
         return Ok(users);
         
     }
 
     [HttpGet("{id}")]
-    public IActionResult GetUserById(Guid id)
+    public async Task<IActionResult> GetUserById(Guid id)
     {
-        return Ok("Get User by id");
+        var user = await _service.GetUserById(id);
+        return Ok(user);
     }
     
     [HttpPost("")]
