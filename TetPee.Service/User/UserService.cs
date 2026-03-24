@@ -3,12 +3,12 @@ using TetPee.Repository;
 
 namespace TetPee.Service.User;
 
-public class Service: IService
+public class UserService: IUserService
 {
     private readonly AppDbContext _dbContext;
     
     
-    public Service(AppDbContext dbContext)
+    public UserService(AppDbContext dbContext)
     {
         _dbContext = dbContext;
     }

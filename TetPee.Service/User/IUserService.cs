@@ -1,6 +1,6 @@
 namespace TetPee.Service.User;
 
-public interface IService
+public interface IUserService
 {
     public Task<Base.Response.PageResult<Response.GetUserResponse>> GetUsers(
         string? searchTerm,

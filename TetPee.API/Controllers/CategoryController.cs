@@ -13,22 +13,26 @@ namespace TetPee.API.Controllers;
 public class CategoryController:  ControllerBase
 {
     public readonly AppDbContext _dbContext;
-    public CategoryController(AppDbContext dbContext)
+    private readonly ICategoryService _categoryService;
+
+    public CategoryController (AppDbContext dbContext, ICategoryService categoryService)
     {
         _dbContext = dbContext;
+        _categoryService = categoryService;
     }
 
     [HttpGet("")]
-    public IActionResult GetCategories([FromQuery] string? searchTerm)
+    public async Task<IActionResult> GetAllCategories()
     {
-        var categories = _dbContext.Categories.ToList();
+        var categories = await _categoryService.GetAllCategories();
         return Ok(categories);
     }
 
-    [HttpGet("{id}")]
-    public IActionResult GetCategory(Guid id)
+    [HttpGet("{parentId}/childrens")]
+    public async Task<IActionResult> GetAllChildrenCategoryById(Guid parentId)
     {
-        return Ok("Get Category by id");
+        var childCategories = await _categoryService.GetAllChildrenCategoriesByParentId(parentId);
+        return Ok(childCategories);
     }
     
     [HttpPost("")]

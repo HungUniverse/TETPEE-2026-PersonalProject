@@ -12,12 +12,12 @@ public class UserController: ControllerBase
     private readonly AppDbContext _dbContext;
     
     //Cái này nâng cao
-    private readonly IService _service;
+    private readonly IUserService _userService;
 
-    public UserController(AppDbContext dbContext, IService service)
+    public UserController(AppDbContext dbContext, IUserService userService)
     {
         _dbContext = dbContext;
-        _service = service;
+        _userService = userService;
     }
 
     //HTTP Method: GET, POST, PUT, DELETE, PATCH
@@ -48,7 +48,7 @@ public class UserController: ControllerBase
     [HttpGet("")]
     public async Task<IActionResult> GetUsers( string? searchTerm, int pageSize = 10, int pageIndex = 1)
     {
-        var users = await _service.GetUsers(searchTerm, pageSize, pageIndex);
+        var users = await _userService.GetUsers(searchTerm, pageSize, pageIndex);
         return Ok(users);
         
     }
@@ -56,7 +56,7 @@ public class UserController: ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUserById(Guid id)
     {
-        var user = await _service.GetUserById(id);
+        var user = await _userService.GetUserById(id);
         return Ok(user);
     }
     
