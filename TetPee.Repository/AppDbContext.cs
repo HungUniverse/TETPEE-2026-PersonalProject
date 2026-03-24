@@ -215,6 +215,11 @@ public class AppDbContext: DbContext
                 .IsRequired()
                 .HasMaxLength(200);
 
+            builder.HasMany(p => p.OrderDetails)
+                .WithOne(od => od.Product)
+                .HasForeignKey(od => od.ProductId)
+                .OnDelete(DeleteBehavior.NoAction);
+
             var products = new List<Product>()
             {
                 new Product()
@@ -302,6 +307,11 @@ public class AppDbContext: DbContext
 
         modelBuilder.Entity<Order>(builder =>
         {
+            builder.HasMany(x => x.OrderDetails)
+                .WithOne(od => od.Order)
+                .HasForeignKey(od => od.OrderId)
+                .OnDelete(DeleteBehavior.NoAction);
+            
             var orders = new List<Order>()
             {
                 new Order()
