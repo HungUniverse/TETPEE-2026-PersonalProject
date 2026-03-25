@@ -5,6 +5,7 @@ using TetPee.Repository;
 using TetPee.Service.Category;
 using TetPee.Service.Identity;
 using TetPee.Service.JwtService;
+using TetPee.Service.Product;
 using TetPee.Service.Seller;
 using TetPee.Service.User;
 
@@ -30,6 +31,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ISellerService, SellerService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IIdentityService, IdentityService>();
 builder.Services.AddTransient<GlobalExceptionHandleMiddleware>();

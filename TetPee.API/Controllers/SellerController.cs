@@ -23,7 +23,7 @@ public class SellerController: ControllerBase
     }
     
     
-    [Authorize(Policy = JwtExtensions.SellerPolicy)]
+    [Authorize(Policy = JwtExtensions.AdminPolicy)]
     [HttpGet("")]
     public async Task<IActionResult> GetSeller( string? searchTerm, int pageSize = 10, int pageIndex = 1)
     {

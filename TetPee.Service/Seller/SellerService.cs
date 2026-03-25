@@ -75,4 +75,50 @@ public class SellerService: ISellerService
         var result = await selectedQuery.FirstOrDefaultAsync();
         return result;
     }
+    
+    public async Task<string> CreateSeller(Request.CreateSellerRequest request)
+    {
+        var existingUserQuery = _dbContext.Users.Where(x => x.Email == request.Email);
+        
+        bool isExistUser = await existingUserQuery.AnyAsync();
+        
+        if(isExistUser)
+        {
+            throw new Exception(Message.UserExistWithMail);
+        }
+        
+        var user = new Repository.Entity.User()
+        {
+            Email = request.Email,
+            FirstName = request.FirstName,
+            LastName = request.LastName,
+            HashedPassword = request.Password,
+            Role = "Seller"
+        };
+
+        _dbContext.Add(user);
+
+        var result = await _dbContext.SaveChangesAsync();
+        
+        if (result > 0)
+        {
+            var seller = new Repository.Entity.Seller()
+            {
+                CompanyAddress = request.CompanyAddress,
+                CompanyName = request.CompanyName,
+                TaxCode = request.TaxCode,
+                UserId = user.Id,
+            };
+            
+            _dbContext.Add(seller);
+            
+            var sellerResult = await _dbContext.SaveChangesAsync();
+
+            if (sellerResult > 0) return "Add Seller successfully";
+            
+            return Message.FailToAddSeller;
+        }
+        
+        return Message.FailToAddSeller;
+    }
 }
