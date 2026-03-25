@@ -3,8 +3,10 @@ using TetPee.Api.Extensions;
 using TetPee.API.Middlewares;
 using TetPee.Repository;
 using TetPee.Service.Category;
+using TetPee.Service.CloudinaryService;
 using TetPee.Service.Identity;
 using TetPee.Service.JwtService;
+using TetPee.Service.MediaService;
 using TetPee.Service.Product;
 using TetPee.Service.Seller;
 using TetPee.Service.User;
@@ -34,6 +36,8 @@ builder.Services.AddScoped<ISellerService, SellerService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IIdentityService, IdentityService>();
+builder.Services.AddScoped<IMediaService, CloudinaryService>();
+
 builder.Services.AddTransient<GlobalExceptionHandleMiddleware>();
 
 var app = builder.Build();

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TetPee.Repository;
 using TetPee.Repository.Entity;
+using TetPee.Service.MediaService;
 using TetPee.Service.User;
 
 namespace TetPee.API.Controllers;
@@ -13,11 +14,13 @@ public class UserController: ControllerBase
     
     //Cái này nâng cao
     private readonly IUserService _userService;
+    private readonly IMediaService _mediaService;
 
-    public UserController(AppDbContext dbContext, IUserService userService)
+    public UserController(AppDbContext dbContext, IUserService userService,  IMediaService mediaService)
     {
         _dbContext = dbContext;
         _userService = userService;
+        _mediaService = mediaService;
     }
 
     //HTTP Method: GET, POST, PUT, DELETE, PATCH
@@ -61,18 +64,25 @@ public class UserController: ControllerBase
     }
     
     [HttpPost("")]
-    public IActionResult CreateUser([FromBody] Request.CreateUserRequest request)
+    public async Task<IActionResult> CreateUsers([FromForm] Request.CreateUserRequest request, CancellationToken cancellationToken)
     {
         var user = new User()
         {
             Email = request.Email,
             FirstName = request.Firstname,
             LastName = request.Lastname,
-            HashedPassword = request.Password // chưa hash, chỉ demo
+            HashedPassword = request.Password // Chưa hash, chỉ demo
         };
         
+        if(request.Avatar != null)
+        {
+            var media = await _mediaService.UploadImageAsync(request.Avatar);
+            user.ImageUrl = media;
+        }
+        
         _dbContext.Users.Add(user);
-        _dbContext.SaveChanges();
+        
+        await _dbContext.SaveChangesAsync(cancellationToken);
         
         return Ok("Create user successfully");
     }
