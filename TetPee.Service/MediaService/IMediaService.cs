@@ -3,5 +3,5 @@ namespace TetPee.Service.MediaService;
 
 public interface IMediaService
 {
-    public Task<string> UploadImageAsync(IFormFile file);
+    public Task<string> UploadAsync(IFormFile file);
 }

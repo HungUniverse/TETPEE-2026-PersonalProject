@@ -21,31 +21,57 @@ public class CloudinaryService: IMediaService
             _cloudinaryOptions.ApiSecret));
     }
 
-    public async Task<string> UploadImageAsync(IFormFile file)
+    public async Task<string> UploadAsync(IFormFile file)
     {
         if (file == null || file.Length == 0)
-        {
             throw new ArgumentException("File is empty or null.", nameof(file));
-        }
-        if (!IsImageFile(file))
-        {
-            throw new ArgumentException("File is not a valid image.", nameof(file));
-        }
-        
+
         await using var stream = file.OpenReadStream();
-        var uploadParams = new ImageUploadParams()
+
+        if (IsImageFile(file))
         {
-            File = new FileDescription(file.FileName, stream)
-        };
-        var uploadResult = await _cloudinary.UploadAsync(uploadParams);
-        return uploadResult.SecureUrl.ToString();
+            var uploadParams = new ImageUploadParams
+            {
+                File = new FileDescription(file.FileName, stream)
+            };
+
+            var result = await _cloudinary.UploadAsync(uploadParams);
+
+            if (result.Error != null)
+                throw new Exception(result.Error.Message);
+
+            return result.SecureUrl.ToString();
+        }
+
+        if (IsVideoFile(file))
+        {
+            var uploadParams = new VideoUploadParams
+            {
+                File = new FileDescription(file.FileName, stream)
+            };
+
+            var result = await _cloudinary.UploadAsync(uploadParams);
+
+            if (result.Error != null)
+                throw new Exception(result.Error.Message);
+
+            return result.SecureUrl.ToString();
+        }
+
+        throw new ArgumentException("Unsupported file type.");
     }
     
     private bool IsImageFile(IFormFile file)
     {
-        // This is a basic check. For more robust validation, consider using a library like MimeDetective
-        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif",".webp", ".mp4" };
-        var fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
-        return allowedExtensions.Contains(fileExtension);
+        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
+        var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
+        return allowedExtensions.Contains(ext);
+    }
+
+    private bool IsVideoFile(IFormFile file)
+    {
+        var allowedExtensions = new[] { ".mp4", ".mov", ".avi", ".mkv" };
+        var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
+        return allowedExtensions.Contains(ext);
     }
 }

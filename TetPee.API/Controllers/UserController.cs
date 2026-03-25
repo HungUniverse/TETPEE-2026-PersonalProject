@@ -76,7 +76,7 @@ public class UserController: ControllerBase
         
         if(request.Avatar != null)
         {
-            var media = await _mediaService.UploadImageAsync(request.Avatar);
+            var media = await _mediaService.UploadAsync(request.Avatar);
             user.ImageUrl = media;
         }
         
