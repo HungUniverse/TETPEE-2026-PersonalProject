@@ -44,7 +44,7 @@ public class CloudinaryService: IMediaService
     private bool IsImageFile(IFormFile file)
     {
         // This is a basic check. For more robust validation, consider using a library like MimeDetective
-        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif",".webp", ".mp4 " };
+        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif",".webp", ".mp4" };
         var fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
         return allowedExtensions.Contains(fileExtension);
     }
