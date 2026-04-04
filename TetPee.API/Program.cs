@@ -1,11 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using TetPee.Api.Extensions;
-using TetPee.API.Middlewares;
+using TetPee.Api.Middlewares;
+
 using TetPee.Repository;
 using TetPee.Service.Category;
 using TetPee.Service.CloudinaryService;
 using TetPee.Service.Identity;
 using TetPee.Service.JwtService;
+using TetPee.Service.MailService;
 using TetPee.Service.MediaService;
 using TetPee.Service.Product;
 using TetPee.Service.Seller;
@@ -16,16 +18,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddHttpContextAccessor();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(
-            builder.Configuration.GetConnectionString("DefaultConnection"),
-            sqlOptions => sqlOptions.EnableRetryOnFailure()
-        )
-    );
+builder.Services.AddDbContext<AppDbContext>(options => 
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
  builder.Services.AddJwtServices(builder.Configuration);
  builder.Services.AddSwaggerServices();
@@ -36,13 +35,14 @@ builder.Services.AddScoped<ISellerService, SellerService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IIdentityService, IdentityService>();
+builder.Services.AddScoped<IMailService, MailService>();
 builder.Services.AddScoped<IMediaService, CloudinaryService>();
 
-builder.Services.AddTransient<GlobalExceptionHandleMiddleware>();
+builder.Services.AddTransient<GlobalExceptionHandlerMiddleware>();
 
 var app = builder.Build();
 
-app.UseMiddleware<GlobalExceptionHandleMiddleware>();
+app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -50,6 +50,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerAPI();
 }
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

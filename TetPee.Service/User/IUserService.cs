@@ -8,4 +8,6 @@ public interface IUserService
         int pageSize);
 
     public Task<Response.GetUserResponse?> GetUserById(Guid id);
+    
+    public Task<string> CreateUser(Request.CreateUserRequest request, CancellationToken  cancellationToken);
 }

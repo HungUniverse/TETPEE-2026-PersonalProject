@@ -66,25 +66,8 @@ public class UserController: ControllerBase
     [HttpPost("")]
     public async Task<IActionResult> CreateUsers([FromForm] Request.CreateUserRequest request, CancellationToken cancellationToken)
     {
-        var user = new User()
-        {
-            Email = request.Email,
-            FirstName = request.Firstname,
-            LastName = request.Lastname,
-            HashedPassword = request.Password // Chưa hash, chỉ demo
-        };
-        
-        if(request.Avatar != null)
-        {
-            var media = await _mediaService.UploadAsync(request.Avatar);
-            user.ImageUrl = media;
-        }
-        
-        _dbContext.Users.Add(user);
-        
-        await _dbContext.SaveChangesAsync(cancellationToken);
-        
-        return Ok("Create user successfully");
+        var user = await _userService.CreateUser(request, cancellationToken);
+        return Ok(user);
     }
     
     [HttpPut("id")]
@@ -97,6 +80,7 @@ public class UserController: ControllerBase
     [HttpDelete("id")]
     public IActionResult DeleteUserById(Guid id)
     {
+        
         return Ok("Delete User");
     }
 }

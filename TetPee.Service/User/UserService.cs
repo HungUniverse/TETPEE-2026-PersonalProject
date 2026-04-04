@@ -1,16 +1,22 @@
 using Microsoft.EntityFrameworkCore;
 using TetPee.Repository;
+using TetPee.Service.MailService;
+using TetPee.Service.MediaService;
 
 namespace TetPee.Service.User;
 
 public class UserService: IUserService
 {
     private readonly AppDbContext _dbContext;
+    private readonly IMailService _emailService;
+    private readonly IMediaService _mediaService;
     
     
-    public UserService(AppDbContext dbContext)
+    public UserService(AppDbContext dbContext,  IMailService emailService,  IMediaService mediaService)
     {
         _dbContext = dbContext;
+        _emailService = emailService;
+        _mediaService = mediaService;
     }
     
     public async Task<Base.Response.PageResult<Response.GetUserResponse>> GetUsers(
@@ -78,5 +84,30 @@ public class UserService: IUserService
         });
         var result = await selectedQuery.FirstOrDefaultAsync();
         return result;
+    }
+
+    public async Task<string> CreateUser(Request.CreateUserRequest request, CancellationToken cancellationToken)
+    {
+        var checkUser = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
+        if(checkUser != null) throw new Exception("Email already exists");
+        
+        var user = new Repository.Entity.User()
+        {
+            Email = request.Email,
+            FirstName = request.Firstname,
+            LastName = request.Lastname,
+            HashedPassword = request.Password // Chưa hash, chỉ demo
+        };
+        
+        if(request.Avatar != null)
+        {
+            var media = await _mediaService.UploadAsync(request.Avatar);
+            user.ImageUrl = media;
+        }
+        
+        _dbContext.Users.Add(user);
+        
+        await _dbContext.SaveChangesAsync(cancellationToken);
+        return "User created";
     }
 }

@@ -4,6 +4,7 @@ using TetPee.Repository;
 using TetPee.Repository.Entity;
 using Microsoft.AspNetCore.Mvc;
 using TetPee.Service.Category;
+using TetPee.Service.Models;
 
 
 namespace TetPee.API.Controllers;
@@ -25,14 +26,14 @@ public class CategoryController:  ControllerBase
     public async Task<IActionResult> GetAllCategories()
     {
         var categories = await _categoryService.GetAllCategories();
-        return Ok(categories);
+        return Ok(ApiResponseFactory.SuccessResponse(categories, "Category retrieved", HttpContext.TraceIdentifier));
     }
 
     [HttpGet("{parentId}/childrens")]
     public async Task<IActionResult> GetAllChildrenCategoryById(Guid parentId)
     {
         var childCategories = await _categoryService.GetAllChildrenCategoriesByParentId(parentId);
-        return Ok(childCategories);
+        return Ok(ApiResponseFactory.SuccessResponse(childCategories, "Child Category retrieved", HttpContext.TraceIdentifier));
     }
     
     [HttpPost("")]
