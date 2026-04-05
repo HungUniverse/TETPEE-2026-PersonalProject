@@ -3,6 +3,7 @@ using TetPee.Api.Extensions;
 using TetPee.Api.Middlewares;
 
 using TetPee.Repository;
+using TetPee.Service.Cart;
 using TetPee.Service.Category;
 using TetPee.Service.CloudinaryService;
 using TetPee.Service.Identity;
@@ -37,7 +38,7 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IIdentityService, IdentityService>();
 builder.Services.AddScoped<IMailService, MailService>();
 builder.Services.AddScoped<IMediaService, CloudinaryService>();
-
+builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddTransient<GlobalExceptionHandlerMiddleware>();
 
 var app = builder.Build();

@@ -23,7 +23,7 @@ public static class ApiResponseFactory
     {
         return new ApiResponse()
         {
-            Success = false,
+            Success = true,
             Message = message,
             Data = data,
             TraceId = traceId,

@@ -37,6 +37,7 @@ public class AppDbContext: DbContext
     public DbSet<OrderDetail>  OrderDetails { get; set; }
     public DbSet<ProductCategory>  ProductCategories { get; set; }
     public DbSet<Category>  Categories { get; set; }
+    public DbSet<CartDetail> CartDetails { get; set; }
 
     
         
@@ -85,6 +86,10 @@ public class AppDbContext: DbContext
                 .HasForeignKey<Seller>(s => s.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
             
+            builder.HasOne(u => u.Cart)
+                .WithOne(s => s.User)
+                .HasForeignKey<Cart>(s => s.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
             // DeleteBehavior.Cascade: Khi một User bị xóa, thì Seller liên quan cũng sẽ bị xóa theo.
             // DeleteBehavior.Restrict: Ngăn chặn việc xóa một User nếu có Seller liên quan tồn tại.
                 //(Tham chiếu tới PK tồn tại)
