@@ -349,7 +349,7 @@ public class AppDbContext: DbContext
                     OrderId = OrderId1,
                     ProductId = ProductId1,
                     Quantity = 2,
-                    Price = 10000,
+                    UnitPrice = 10000,
                     
                 },
                 new OrderDetail()
@@ -358,7 +358,7 @@ public class AppDbContext: DbContext
                     OrderId = OrderId1,
                     ProductId = ProductId2,
                     Quantity = 1,
-                    Price = 222000,
+                    UnitPrice = 222000,
                 }
             };
             builder.HasData(orderDetails);
