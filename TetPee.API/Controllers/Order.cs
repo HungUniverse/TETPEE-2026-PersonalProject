@@ -28,8 +28,8 @@ public class Order: ControllerBase
     [HttpPost("Sepay/Webhook")]
     public async Task<IActionResult> SepayWebhook(Request.SepayWebhookRequest request)
     {
-        
-        return Ok(ApiResponseFactory.SuccessResponse(null,"Webhook created", HttpContext.TraceIdentifier));
+        _orderService.SepayWebhookHandler(request);
+        return Ok(ApiResponseFactory.SuccessResponse("","Webhook created", HttpContext.TraceIdentifier));
     }
     
 }

@@ -94,10 +94,11 @@ public class OrderService : IOrderService
             await _dbContext.SaveChangesAsync();
                 
         }
-
+        
+        
+        
         string description = $"TETPEE - {order.Id}";
-            
-
+        
         var response = new Response.CreateOrderResponse()
         {
             OrderId = order.Id,
@@ -148,7 +149,9 @@ public class OrderService : IOrderService
             throw new Exception("Invalid description format");
         }
         
-        var query = _dbContext.Orders.Where(x => x.Id == orderId);
+        var query = _dbContext.Orders
+            .Where(x => x.Id == orderId)
+            .Include(x => x.OrderDetails);
         var order =  await query.FirstOrDefaultAsync();
 
         if (order == null)
@@ -168,6 +171,20 @@ public class OrderService : IOrderService
             
         order.Status = "Completed";
         _dbContext.Update(order);
+        await _dbContext.SaveChangesAsync();
+        
+        // TÌm nững sản phẩm chứa trong Cart với các id sau productIds của UserId
+        // Tìm đc rồi thì xóa đi
+        //_dbContext.RemoveRange();
+        
+        var productIds = order.OrderDetails.Select(x => x.ProductId).Distinct().ToList();
+        
+        var listProductInCart = _dbContext.CartDetails.Where(x => 
+            productIds.Contains(x.ProductId) && 
+            x.Cart.UserId == order.UserId);
+        var listProductInCartAsync = await listProductInCart.ToListAsync();
+        
+        _dbContext.CartDetails.RemoveRange(listProductInCartAsync);
         await _dbContext.SaveChangesAsync();
         
     }

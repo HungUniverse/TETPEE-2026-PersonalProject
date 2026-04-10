@@ -26,7 +26,7 @@ public class Request
     public class SepayWebhookRequest
     {
         public string Gateway { get; set; }
-        public DateTime TrasactionDate { get; set; }
+        public string TrasactionDate { get; set; }
         public string AccountNumber { get; set; }
         public string SubAccount { get; set; }
         public string Code { get; set; }
